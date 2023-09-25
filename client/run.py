@@ -4,6 +4,7 @@ import threading
 import RPi.GPIO as gpio
 import time
 
+# 树莓派GPIO初始化
 # gpio.cleanup()
 gpio.setmode(gpio.BCM)
 gpio.setup(19,gpio.OUT)
@@ -12,7 +13,7 @@ gpio.output(19,False)
 global cam_light # 舌诊灯的亮度 1-100
 cam_light = 50
 
-IP = '192.168.137.1'
+IP = '192.168.137.1' # 设置IP
 image_PORT = '5555' # 上传图像端口
 order_PORT = '5556' # 接受指令端口
 
@@ -41,7 +42,7 @@ def receCMD_thread():
             cam_light = 100 
             
 
-# 设置亮度
+# 设置亮度，使用GOIO的PWM调光
 def light_set():
     global cam_light
     while True:
@@ -50,14 +51,17 @@ def light_set():
         time.sleep((100-cam_light)/10000)
         gpio.output(13,True)
 
+# 创建线程
 uploadIMG_thread = threading.Thread(target=uploadIMG_thread)
 receCMD_thread = threading.Thread(target=receCMD_thread)
 light_set = threading.Thread(target=light_set)
 
+# 启动线程
 uploadIMG_thread.start()
 receCMD_thread.start()
 light_set.start()
 
+# 等待线程结束
 uploadIMG_thread.join()
 receCMD_thread.join()
 light_set.join()

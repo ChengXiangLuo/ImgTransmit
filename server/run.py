@@ -5,22 +5,22 @@ import cv2
 import threading
 import RecvImg
 
-IP = ''
-re_port = '5555'
-se_port = '5556'
+IP = '' # 默认使用本地IP
+re_port = '5555' # 接收端口
+se_port = '5556' # 发送端口
 
 re_img = RecvImg._RecvImg(IP,re_port)
 se_cmd = RecvImg._SendCmd(IP,se_port)
 
 def user_input_thread():
     while True:
-        value = int(input())
-        se_cmd.lightValueSet(value)
+        value = int(input()) # 获得要设置的亮度
+        se_cmd.lightValueSet(value) # 发送设置亮度的指令
 
 def zmq_receive_thread():
     while True:
         frame = re_img.imgProcessing()              
-        cv2.imshow('img',frame)
+        cv2.imshow('img',frame) # 显示接收的图像
         cv2.waitKey(1)
 
 
